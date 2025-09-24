@@ -1,11 +1,8 @@
 // svelte.config.js
-import adapter from "@jesterkit/exe-sveltekit";
+import adapter from "@sveltejs/adapter-vercel";
 
 export default {
   kit: {
-    adapter: adapter({
-      binaryName: "Amperage",
-      target: "linux-x64",
-    }),
+    adapter: adapter({}),
   },
 };
