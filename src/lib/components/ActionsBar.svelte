@@ -25,25 +25,27 @@
 <div
   class="fixed bottom-0 flex h-8 w-screen flex-row items-center gap-2 border-t border-editor-whitespace-foreground bg-editor-background p-2 text-editor-foreground"
 >
-  <button
-    class="cursor-pointer"
-    onclick={async () => {
-      if (device) {
-        device.disconnect();
-        device = null;
-      } else {
-        device = await connectToBrain(() => {
+  {#if "serial" in navigator}
+    <button
+      class="cursor-pointer"
+      onclick={async () => {
+        if (device) {
+          device.disconnect();
           device = null;
-        });
-      }
-    }}
-  >
-    {#if device}
-      <Unlink size={16} />
-    {:else}
-      <Link size={16} />
-    {/if}
-  </button>
+        } else {
+          device = await connectToBrain(() => {
+            device = null;
+          });
+        }
+      }}
+    >
+      {#if device}
+        <Unlink size={16} />
+      {:else}
+        <Link size={16} />
+      {/if}
+    </button>
+  {/if}
 
   <button
     onclick={() => {

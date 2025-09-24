@@ -28,8 +28,4 @@
       if (e.key === "Enter") onEnter();
     }}
   />
-
-  <button class="cursor-pointer ml-auto" onclick={() => (modal = "git")}>
-    <GitBranch size={20}></GitBranch>
-  </button>
 </div>
