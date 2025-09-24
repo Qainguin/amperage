@@ -1,13 +1,15 @@
 <script lang="ts">
   import GitBranch from "@lucide/svelte/icons/git-branch";
-  import { onMount } from "svelte";
 
   let { projectName = $bindable("Web Upload"), modal = $bindable("") } =
     $props();
 
   $effect(() => {
     window.projectName = projectName;
-    if (projectName !== "") localStorage.setItem(window.projectId, projectName);
+    if (projectName !== "") {
+      console.log("code:" + window.projectId);
+      localStorage.setItem(`projects:${window.projectId}`, projectName);
+    }
   });
 
   function onEnter() {

@@ -62,7 +62,7 @@
     }
 
     if (onFsInit) onFsInit();
-    projectName = localStorage.getItem(data.id) ?? "Web Upload";
+    projectName = localStorage.getItem(`projects:${data.id}`) ?? "Web Upload";
   });
 
   // this is fully reactive! setting value to another string will change the editor accordingly
@@ -99,8 +99,6 @@
       console.log("new markers:", markers);
     });
   });
-
-  $inspect(errors);
 </script>
 
 <div class="absolute top-8 flex flex-row w-screen">

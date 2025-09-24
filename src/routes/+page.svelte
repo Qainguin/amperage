@@ -101,10 +101,10 @@
           oncontextmenu={async (e) => {
             e.preventDefault();
             const fs = window.pfs;
-            localStorage.removeItem(id);
+            localStorage.removeItem(`projects:${id}`);
             await fs.unlink(`/${id}`);
             projects = await fs.readdir("/");
-          }}>{localStorage.getItem(id)}</button
+          }}>{localStorage.getItem(`projects:${id}`)}</button
         >
       {/each}
     {/if}
