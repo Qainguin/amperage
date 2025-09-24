@@ -12,7 +12,6 @@
   import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import type { BuildError } from "$lib/builder.js";
   import { errorsToMarkers } from "$lib/helper.js";
-  import GitModal from "$lib/components/modals/GitModal.svelte";
 
   let { data } = $props();
 
@@ -141,5 +140,3 @@
 <Codebar bind:projectName bind:modal></Codebar>
 
 <ContextMenu bind:contexting bind:updateVisualFS></ContextMenu>
-
-<GitModal bind:modal></GitModal>
