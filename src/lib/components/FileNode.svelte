@@ -27,7 +27,7 @@
   function onContextMenu(e: MouseEvent) {
     console.log(e);
     e.preventDefault();
-    contexting = { left: e.x, top: e.y };
+    contexting = { left: e.x, top: e.y, path: entry.path };
   }
 
   function isFileError() {

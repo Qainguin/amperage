@@ -5,6 +5,7 @@
 
   interface Props {
     onFsInit: (() => any) | undefined;
+    updateVisualFS: (() => any) | undefined;
     changeFile: ((entry: any) => any) | undefined;
     currentPath: string;
     contexting: any;
@@ -13,6 +14,7 @@
 
   let {
     onFsInit = $bindable(),
+    updateVisualFS = $bindable(),
     changeFile,
     currentPath = $bindable(),
     contexting = $bindable(),
@@ -33,6 +35,12 @@
 
     if (changeFile)
       changeFile({ type: "file", path: `/${window.projectId}/src/main.cpp` });
+  };
+
+  updateVisualFS = async () => {
+    const fs = window.pfs;
+    const baseFS = await buildVisualFS(fs, `/${window.projectId}/`);
+    visualFS = sortVisualFS(baseFS);
   };
 </script>
 

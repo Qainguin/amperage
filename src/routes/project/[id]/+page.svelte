@@ -16,6 +16,7 @@
   let { data } = $props();
 
   let onFsInit: (() => any) | undefined = $state(undefined);
+  let updateVisualFS: (() => any) | undefined = $state(undefined);
 
   let theme = $state("birds-of-paradise");
 
@@ -106,6 +107,7 @@
       <Explorer
         bind:contexting
         bind:onFsInit
+        bind:updateVisualFS
         {changeFile}
         bind:currentPath
         bind:errors
@@ -135,4 +137,4 @@
 <ActionsBar bind:errors></ActionsBar>
 <Codebar bind:projectName></Codebar>
 
-<ContextMenu bind:contexting></ContextMenu>
+<ContextMenu bind:contexting bind:updateVisualFS></ContextMenu>
