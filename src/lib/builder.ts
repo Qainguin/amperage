@@ -2,6 +2,13 @@ import type { PromisifiedFS } from "@isomorphic-git/lightning-fs";
 import { compressFs } from "$lib";
 import { PUBLIC_CIRCUIT_URL } from "$env/static/public";
 
+export interface BuildError {
+  file: string;
+  line: number;
+  column: number;
+  message: string;
+}
+
 export async function buildProject(
   fs: PromisifiedFS,
   log: any,
@@ -10,6 +17,8 @@ export async function buildProject(
 ): Promise<void> {
   // Create a WebSocket connection
   const socket = new WebSocket(PUBLIC_CIRCUIT_URL);
+
+  let buildLog = "";
 
   socket.onopen = async (event) => {
     // Get the zipped data (your existing function)
@@ -44,7 +53,6 @@ export async function buildProject(
     try {
       // Parse the incoming message as a JSON object
       const data = JSON.parse(event.data);
-      log("Message from server: " + event.data);
 
       // Check if the 'files' key exists in the message.
       // Using `Object.prototype.hasOwnProperty.call()` is a safe way to check for a key
@@ -55,13 +63,16 @@ export async function buildProject(
         log("Build complete message received. Closing socket.");
         if (Object.prototype.hasOwnProperty.call(data, "files")) {
           log("Files received from server.");
-          finish(data.files);
+          finish(data.files, []);
         }
         socket.close();
       } else if (data.type === "build_failed") {
         log("Build failed message received. Closing socket.");
-        finish();
+        console.log(buildLog);
+        finish(null, parseErrors(buildLog));
         socket.close();
+      } else if (data.message !== "upload_started") {
+        buildLog += data.message;
       }
     } catch (e) {
       err("Failed to parse message from server:", event.data);
@@ -76,4 +87,35 @@ export async function buildProject(
   socket.onclose = () => {
     log("Finished.");
   };
+}
+
+function parseErrors(errorLog: string): BuildError[] {
+  // Regex to match error lines.
+  // This version specifically captures the file path, line, column,
+  // and the full error message, including any multi-line content.
+  const regex =
+    /^([a-zA-Z/._-]+):(\d+):(\d+):\s+error:\s+([^]+?)(?=\n[a-zA-Z/._-]+:\d+|$)/gm;
+
+  const errors = [];
+  let match;
+
+  // Iterate through all matches found in the error log.
+  while ((match = regex.exec(errorLog)) !== null) {
+    // Extract the captured groups from the regex match.
+    const file = match[1];
+    const line = parseInt(match[2], 10);
+    const column = parseInt(match[3], 10);
+    // Trim the error message to remove leading/trailing whitespace.
+    const message = match[4].trim();
+
+    // Add the structured error object to our array.
+    errors.push({
+      file,
+      line,
+      column,
+      message,
+    });
+  }
+
+  return errors;
 }

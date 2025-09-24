@@ -21,7 +21,7 @@ export interface VisualFSNode {
 // place files you want to import through the `$lib` alias in this folder.
 export async function buildVisualFS(
   fs: PromisifiedFS,
-  path: string
+  path: string,
 ): Promise<VisualFSNode[]> {
   const entries = await fs.readdir(path);
   let visual: any[] = [];
@@ -69,7 +69,7 @@ export async function compressFs(fs: PromisifiedFS): Promise<Uint8Array> {
         projectPattern = new RegExp(
           "^\\/" +
             window.projectId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
-            "\\/"
+            "\\/",
         );
         const relativePath = fullPath.replace(projectPattern, "");
         zipContents[relativePath] = fileData;
