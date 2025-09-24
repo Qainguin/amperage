@@ -17,23 +17,27 @@ export async function stageChanges(fs: PromisifiedFS) {
         status.map(([filepath, , worktreeStatus]) =>
           worktreeStatus
             ? git.add({ ...repo, filepath })
-            : git.remove({ ...repo, filepath })
-        )
-      )
+            : git.remove({ ...repo, filepath }),
+        ),
+      ),
     );
 }
 
 export async function commitChanges(
   fs: PromisifiedFS,
-  message: string = "Initial Commit"
+  details: { name: string; email: string; message: string } = {
+    name: "Qainguin",
+    email: "qainguin@example.com",
+    message: "Initial Commit",
+  },
 ) {
   const repo = { fs, dir: `/${window.projectId}` };
   await git.commit({
     ...repo,
     author: {
-      name: "Qainguin",
-      email: "qainguin@example.com",
+      name: details.name,
+      email: details.email,
     },
-    message,
+    message: details.message,
   });
 }

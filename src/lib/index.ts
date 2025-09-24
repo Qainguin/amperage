@@ -39,6 +39,8 @@ export async function buildVisualFS(
     };
 
     if (entryStats.isDirectory()) {
+      if (entryName === ".git") continue;
+
       // Recursively call the function for directories
       node.expanded = openedDirs.includes(entryName);
       node.children = await buildVisualFS(fs, fullPath);

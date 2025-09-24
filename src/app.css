@@ -1,14 +1,14 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
 @font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/jetbrains-mono.woff2');
+  font-family: "JetBrains Mono";
+  src: url("/jetbrains-mono.woff2");
 }
 
 @theme {
-  --font-mono: 'JetBrains Mono';
+  --font-mono: "JetBrains Mono";
 
   --color-editor-foreground: oklch(0.9061 0.0388 99.06);
   --color-editor-background: oklch(0.291 0.0246 26.79);
@@ -16,6 +16,7 @@
   --color-editor-line-highlight-background: oklch(0.2098 0.0176 50.46);
   --color-editor-cursor-foreground: oklch(0.9061 0.0388 99.06);
   --color-editor-whitespace-foreground: oklch(0.3288 0.027 29.38);
+  --color-editor-hover-foreground: oklch(0.5 0.027 29.38);
 }
 
 [data-pane-resizer] {

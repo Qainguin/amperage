@@ -12,6 +12,7 @@
   import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import type { BuildError } from "$lib/builder.js";
   import { errorsToMarkers } from "$lib/helper.js";
+  import GitModal from "$lib/components/modals/GitModal.svelte";
 
   let { data } = $props();
 
@@ -35,6 +36,8 @@
   let editor: any = $state(undefined);
 
   let errors: BuildError[] = $state([]);
+
+  let modal: "git" | "" = $state("");
 
   onMount(async () => {
     console.log(exportedThemes);
@@ -135,6 +138,8 @@
 </div>
 
 <ActionsBar bind:errors></ActionsBar>
-<Codebar bind:projectName></Codebar>
+<Codebar bind:projectName bind:modal></Codebar>
 
 <ContextMenu bind:contexting bind:updateVisualFS></ContextMenu>
+
+<GitModal bind:modal></GitModal>
