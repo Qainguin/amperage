@@ -5,7 +5,6 @@
     createProjectFromRepo,
   } from "$lib/creator";
   import LightningFS from "@isomorphic-git/lightning-fs";
-  import { nanoid } from "$lib";
   import { Buffer } from "buffer";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";

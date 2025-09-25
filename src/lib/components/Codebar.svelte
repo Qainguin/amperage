@@ -1,13 +1,10 @@
 <script lang="ts">
-  import GitBranch from "@lucide/svelte/icons/git-branch";
-
   let { projectName = $bindable("Web Upload"), modal = $bindable("") } =
     $props();
 
   $effect(() => {
     window.projectName = projectName;
     if (projectName !== "") {
-      console.log("code:" + window.projectId);
       localStorage.setItem(`projects:${window.projectId}`, projectName);
     }
   });
