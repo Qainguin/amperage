@@ -23,7 +23,15 @@ export async function buildVisualFS(
   fs: PromisifiedFS,
   path: string,
 ): Promise<VisualFSNode[]> {
-  const entries = await fs.readdir(path);
+  let entries;
+
+  try {
+    entries = await fs.readdir(path);
+  } catch (err: any) {
+    console.error(err);
+    return [];
+  }
+
   let visual: any[] = [];
 
   for (const entryName of entries) {
@@ -70,8 +78,8 @@ export async function compressFs(fs: PromisifiedFS): Promise<Uint8Array> {
         // which creates the folder structure inside the zip
         projectPattern = new RegExp(
           "^\\/" +
-            window.projectId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
-            "\\/",
+          window.projectId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+          "\\/",
         );
         const relativePath = fullPath.replace(projectPattern, "");
         zipContents[relativePath] = fileData;

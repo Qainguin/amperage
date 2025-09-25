@@ -12,6 +12,8 @@ export async function createProjectFromTemplate(
   const id = nanoid();
   window.projectId = id;
 
+  goto(`/project/${id}`);
+
   localStorage.setItem(`projects:${id}`, `${template.toUpperCase()} Template`);
 
   try {
@@ -57,8 +59,6 @@ export async function createProjectFromTemplate(
   await commitChanges(fs);
 
   console.log(await log({ fs, dir: `/${window.projectId}` }));
-
-  goto(`/project/${id}`);
 }
 
 export async function writeTemplateToFS(
@@ -82,7 +82,6 @@ export async function writeTemplateToFS(
       if (typeof value === "string") {
         // It's a file
         await fs.writeFile(fullPath, value, "utf8");
-        console.log(`✅ Wrote file: ${fullPath}`);
       } else if (typeof value === "object" && value !== null) {
         // It's a directory
         await writeRecursive(value, fullPath);

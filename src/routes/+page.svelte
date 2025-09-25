@@ -90,9 +90,7 @@
         <button
           class="w-fit cursor-pointer text-start hover:underline"
           onclick={() => {
-            window.Buffer = Buffer;
-            window.fs = new LightningFS("fs");
-            window.pfs = window.fs.promises;
+            window.fs = null;
             window.projectId = id;
 
             goto("/project/" + window.projectId);

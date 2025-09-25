@@ -7,11 +7,11 @@
   import LightningFS from "@isomorphic-git/lightning-fs";
   import ActionsBar from "$lib/components/ActionsBar.svelte";
   import Codebar from "$lib/components/Codebar.svelte";
-  import { createProjectFromTemplate } from "$lib/creator.js";
   import { goto } from "$app/navigation";
   import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import type { BuildError } from "$lib/builder.js";
   import { errorsToMarkers } from "$lib/helper.js";
+  import { WindArrowDown } from "@lucide/svelte";
 
   let { data } = $props();
 
@@ -38,6 +38,8 @@
 
   let modal: "git" | "" = $state("");
 
+  let waiter: any = $state(undefined);
+
   onMount(async () => {
     console.log(exportedThemes);
 
@@ -50,19 +52,44 @@
         const root = await window.pfs.readdir("/" + window.projectId);
         if (root.length === 0) {
           console.log("nothing there");
-        } else console.log("loaded fs");
+        } else {
+          console.log("loaded fs");
+          projectName =
+            localStorage.getItem(`projects:${data.id}`) ?? "Unknown";
+          if (onFsInit) onFsInit();
+          return;
+        }
       } catch (err: any) {
         if (err.message.includes("ENOENT")) {
-          goto("/");
           return;
         }
       }
     } else {
       console.log("fs already initialized");
-    }
 
-    if (onFsInit) onFsInit();
-    projectName = localStorage.getItem(`projects:${data.id}`) ?? "Web Upload";
+      try {
+        const root = await window.pfs.readdir("/" + window.projectId);
+        if (root.length === 0) {
+          console.log("nothing there");
+        } else console.log("loaded fs");
+      } catch (err: any) {
+        if (err.message.includes("ENOENT")) {
+          console.log("setting up waiter");
+          waiter = setInterval(async () => {
+            try {
+              await window.pfs.readdir("/" + window.projectId);
+              clearInterval(waiter);
+              projectName =
+                localStorage.getItem(`projects:${data.id}`) ?? "Unknown";
+              if (onFsInit) onFsInit();
+            } catch (err: any) {
+              return;
+            }
+          }, 200);
+          return;
+        }
+      }
+    }
   });
 
   // this is fully reactive! setting value to another string will change the editor accordingly

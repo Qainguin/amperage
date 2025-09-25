@@ -49,6 +49,7 @@
 
   <button
     onclick={() => {
+      if (buildState === "building") return;
       buildState = "building";
       buildProject(
         window.pfs,

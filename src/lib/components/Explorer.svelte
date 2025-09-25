@@ -33,6 +33,8 @@
     fsInitialized = true;
     visualFS = sortVisualFS(await buildVisualFS(fs, "/" + window.projectId));
 
+    if (visualFS.length === 0) return;
+
     if (changeFile)
       changeFile({ type: "file", path: `/${window.projectId}/src/main.cpp` });
   };
