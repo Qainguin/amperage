@@ -88,7 +88,7 @@
     <h2>How can I support this project?</h2>
     <p>
       The main way you can support this project is by contributing code to the
-      GitHub repository or opening new issues on the GitHub repository.
+      GitHub repository or opening new issues on the <a href="https://github.com/Qainguin/amperage">GitHub</a> repository.
     </p>
   </div>
 </main>
@@ -152,3 +152,4 @@
     border-top: 1px solid var(--color-editor-whitespace-foreground);
   }
 </style>
+
