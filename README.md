@@ -1,6 +1,6 @@
 # Amperage
 
-The definitive web-based VEX V5 & PROS IDE.
+The definitive web IDE for VEX V5 & PROS.
 
 ## Dependencies
 
