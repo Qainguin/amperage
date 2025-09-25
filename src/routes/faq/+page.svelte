@@ -135,16 +135,6 @@
 </main>
 
 <style>
-  /* Basic Body Styles */
-  body {
-    font-family: "Open Sans", sans-serif;
-    line-height: 1.6;
-    color: var(--color-editor-foreground);
-    background-color: #f8f8f8;
-    margin: 0;
-    padding: 20px;
-  }
-
   /* Headings */
   h1 {
     font-size: 2.5em;
@@ -179,14 +169,6 @@
     margin: 0 auto;
     color: var(--color-editor-foreground);
     font-family: var(--font-mono);
-  }
-
-  /* Responsive Images */
-  .blog-post img {
-    max-width: 100%;
-    height: auto;
-    display: block; /* Prevents extra space below image */
-    margin-bottom: 6em;
   }
 
   hr {

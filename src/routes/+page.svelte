@@ -104,7 +104,7 @@
             localStorage.removeItem(`projects:${id}`);
             await fs.unlink(`/${id}`);
             projects = await fs.readdir("/");
-          }}>{localStorage.getItem(`projects:${id}`)}</button
+          }}>{localStorage.getItem(`projects:${id}`) ?? "Unknown"}</button
         >
       {/each}
     {/if}

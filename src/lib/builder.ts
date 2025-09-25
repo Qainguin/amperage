@@ -13,7 +13,7 @@ export async function buildProject(
   fs: PromisifiedFS,
   log: any,
   err: any,
-  finish: any = () => {},
+  finish: any = () => { },
 ): Promise<void> {
   // Create a WebSocket connection
   const socket = new WebSocket(PUBLIC_CIRCUIT_URL);
@@ -81,6 +81,7 @@ export async function buildProject(
 
   socket.onerror = (error) => {
     err("WebSocket error: ", error);
+    console.error(error);
     finish();
   };
 
