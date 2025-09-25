@@ -88,8 +88,49 @@
     <h2>How can I support this project?</h2>
     <p>
       The main way you can support this project is by contributing code to the
-      GitHub repository or opening new issues on the <a href="https://github.com/Qainguin/amperage">GitHub</a> repository.
+      GitHub repository or opening new issues on the <a
+        href="https://github.com/Qainguin/amperage">GitHub</a
+      > repository.
     </p>
+
+    <h2>Special Thanks</h2>
+    <ul class="list-disc ml-12">
+      <li>
+        <div class="flex flex-row">
+          <a href="https://github.com/lemlib/v5-serial-protocol"
+            >v5-serial-protocol</a
+          >
+
+          &nbsp;- This project saved me years.
+        </div>
+      </li>
+      <li>
+        <a href="https://www.npmjs.com/package/@sveltejs/kit">@sveltejs/kit</a>
+      </li>
+      <li>
+        <a href="https://www.npmjs.com/package/@isomorphic-git/lightning-fs"
+          >@isomorphic-git/lightning-fs</a
+        >
+      </li>
+      <li>
+        <a href="https://www.npmjs.com/package/@lucide/svelte">@lucide/svelte</a
+        >
+      </li>
+      <li><a href="https://www.npmjs.com/package/buffer">buffer</a></li>
+      <li><a href="https://www.npmjs.com/package/fflate">fflate</a></li>
+      <li>
+        <a href="https://www.npmjs.com/package/isomorphic-git">isomorphic-git</a
+        >
+      </li>
+      <li>
+        <a href="https://www.npmjs.com/package/svelte-monaco">svelte-monaco</a>
+      </li>
+      <li>
+        <a href="https://www.npmjs.com/package/monaco-themes">monaco-themes</a>
+      </li>
+      <li><a href="https://www.npmjs.com/package/nanoid">nanoid</a></li>
+      <li><a href="https://www.npmjs.com/package/paneforge">paneforge</a></li>
+    </ul>
   </div>
 </main>
 
@@ -152,4 +193,3 @@
     border-top: 1px solid var(--color-editor-whitespace-foreground);
   }
 </style>
-
