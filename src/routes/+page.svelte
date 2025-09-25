@@ -36,9 +36,7 @@
     <button
       class="w-fit cursor-pointer text-start hover:underline"
       onclick={async () => {
-        window.Buffer = Buffer;
-        window.fs = new LightningFS("fs");
-        window.pfs = window.fs.promises;
+        window.fs = null;
 
         await createProjectFromDirectory(window.pfs);
       }}>Open Directory</button
@@ -47,9 +45,7 @@
     <button
       class="w-fit cursor-pointer text-start hover:underline"
       onclick={async () => {
-        window.Buffer = Buffer;
-        window.fs = new LightningFS("fs");
-        window.pfs = window.fs.promises;
+        window.fs = null;
 
         const url = prompt(
           "Enter the URL of the repository you would like to clone.",
