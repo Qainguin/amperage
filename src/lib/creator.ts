@@ -1,7 +1,7 @@
 import { goto } from "$app/navigation";
 import { nanoid } from "$lib";
 import type { PromisifiedFS } from "@isomorphic-git/lightning-fs";
-import { initRepo, stageChanges, commitChanges } from "./gitter";
+import { initRepo, stageChanges, commitChanges, getRepoNameFromUrl } from "./gitter";
 import http from "isomorphic-git/http/web";
 import { log, clone } from "isomorphic-git";
 
@@ -190,6 +190,7 @@ export async function createProjectFromRepo(url: string, fs: PromisifiedFS) {
     depth: 1,
   });
   console.log("Finished cloning");
+  localStorage.setItem(`projects:${id}`, (getRepoNameFromUrl(url) ?? 'Unknown'));
 
   goto(`/project/${window.projectId}`);
 }

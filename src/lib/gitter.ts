@@ -41,3 +41,35 @@ export async function commitChanges(
     message: details.message,
   });
 }
+
+export function getRepoNameFromUrl(url: string): string | null {
+  // Return null if the input is not a string or is empty
+  if (typeof url !== 'string' || !url.trim()) {
+    return null;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+
+    // Ensure the protocol is HTTP or HTTPS
+    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+      return null;
+    }
+
+    // Split the pathname and filter out any empty parts
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+
+    // The repository name should be the last part of the path
+    let repoName = pathParts[pathParts.length - 1] || null;
+
+    // Remove the ".git" extension if it exists
+    if (repoName && repoName.toLowerCase().endsWith('.git')) {
+      repoName = repoName.slice(0, -4);
+    }
+
+    return repoName;
+  } catch (error) {
+    // Catch invalid URL format errors
+    return null;
+  }
+}
