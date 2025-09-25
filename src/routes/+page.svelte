@@ -60,9 +60,7 @@
     <button
       class="w-fit cursor-pointer text-start hover:underline"
       onclick={async () => {
-        window.Buffer = Buffer;
-        window.fs = new LightningFS("fs");
-        window.pfs = window.fs.promises;
+        window.fs = null;
 
         await createProjectFromTemplate("jar", window.pfs);
       }}>Create JAR Template</button
