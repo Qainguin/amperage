@@ -28,11 +28,11 @@
 
 		try {
 			programNames = JSON.parse(localStorage.getItem('programNames') ?? '{}');
-		} catch(err: any) {
+		} catch (err: any) {
 			programNames = {};
 			localStorage.setItem('programNames', JSON.stringify({}));
 		}
-	})
+	});
 
 	$inspect(programNames);
 </script>
@@ -78,4 +78,6 @@
 			>
 		{/each}
 	{/if}
+
+	<a class="mt-4 w-fit cursor-pointer text-xl hover:underline" href="/faq">FAQ</a>
 </main>
