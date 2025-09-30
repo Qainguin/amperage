@@ -99,6 +99,9 @@
 				</div>
 			</li>
 			<li>
+				<a href="https://www.npmjs.com/package/prism-code-editor">prism-code-editor</a>
+			</li>
+			<li>
 				<a href="https://www.npmjs.com/package/@sveltejs/kit">@sveltejs/kit</a>
 			</li>
 			<li>
@@ -113,9 +116,6 @@
 			<li><a href="https://www.npmjs.com/package/littlezipper">littlezipper</a></li>
 			<li>
 				<a href="https://www.npmjs.com/package/isomorphic-git">isomorphic-git</a>
-			</li>
-			<li>
-				<a href="https://www.npmjs.com/package/prism-code-editor">prism-code-editor</a>
 			</li>
 			<li><a href="https://www.npmjs.com/package/nanoid">nanoid</a></li>
 			<li><a href="https://www.npmjs.com/package/paneforge">paneforge</a></li>
