@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import { readdir } from 'fs/promises';
 import { rm } from 'fs/promises';
 import { readFile } from 'fs/promises';
+import { cp } from 'fs/promises';
+import { stat } from 'fs/promises';
 var AdmZip = require('adm-zip');
 
 interface Issue {
@@ -66,11 +68,37 @@ async function processZipFile(data: Uint8Array, ws: WebSocket): Promise<void> {
     const compilationTimeMs = performance.now() - start;
 
     // 3. Send results back
-    let result = {
-      status: 'success',
-      bin: Array.from(await readFile(`builds/${buildId}/build/${buildId}?.bin`)),
-      compilationTimeMs, // Mock time
-    };
+
+    let result = {};
+    let pros = false;
+
+    try {
+      await stat(`builds/${buildId}/build/${buildId}?.bin`)
+      result = {
+        status: 'success',
+        bin: Array.from(await readFile(`builds/${buildId}/build/${buildId}?.bin`)),
+        compilationTimeMs, // Mock time
+      };
+    } catch(err: any) {
+    }
+
+    try {
+      await stat(`builds/${buildId}/bin/cold.package.bin`);
+      await stat(`builds/${buildId}/bin/hot.package.bin`);
+      
+      result = {
+        status: 'success',
+        bin: {
+          hot: Array.from(await readFile(`builds/${buildId}/bin/hot.package.bin`)), 
+          cold: Array.from(await readFile(`builds/${buildId}/bin/cold.package.bin`))
+        },
+        compilationTimeMs, // Mock time
+      };
+
+      pros = true;
+    } catch(err: any) {
+      console.error(err);
+    }
 
     ws.send(JSON.stringify(result));
     ws.close();
@@ -96,21 +124,59 @@ async function runBuild(buildId: string): Promise<void | Issue[]> {
   }
 
   return new Promise(async (resolve, reject) => {
-    const makeProcess = Bun.spawn({
-      cmd: ["make", "-j", "4"],
-      cwd: `builds/${buildId}`,
-      stderr: 'pipe',
-      stdout: 'pipe',
-      async onExit(proc, exitCode) {
-        if (exitCode === 0) resolve();
-        else {
-          const makeErr = await Bun.readableStreamToText(makeProcess.stderr);
-          reject(parseCompilerOutput(makeErr));
-        }
-      }
-    });
+    let pros = false;
+    try {
+      await readFile(`builds/${buildId}/project.pros`);
+      pros = true;
+    } catch(err: any) {
+      pros = false;
+    }
 
-    const makeOut = await Bun.readableStreamToText(makeProcess.stdout);
+    if (pros) {
+      let ez = false;
+      try {
+        ez = (await readFile(`builds/${buildId}/project.pros`, {encoding: 'utf-8'})).includes('EZ-Template')
+      } catch(err: any) {
+        ez = false;
+      }
+
+      if (ez) {
+        console.log("Project is EZ");
+        await cp(`templates/ez`, `builds/${buildId}`, {recursive: true});
+      }
+
+      const prosProcess = Bun.spawn({
+        cmd: ["pros", "make"],
+        cwd: `builds/${buildId}`,
+        env: {
+          ...process.env
+        },
+        stderr: 'pipe',
+        stdout: 'pipe',
+        async onExit(proc, exitCode) {
+          if (exitCode === 0) resolve();
+          else {
+            const makeErr = await Bun.readableStreamToText(proc.stderr);
+            console.log(makeErr);
+            reject(parseCompilerOutput(makeErr));
+          }
+        }
+      });
+    } else {
+      const makeProcess = Bun.spawn({
+        cmd: ["make", "-j", "4"],
+        cwd: `builds/${buildId}`,
+        stderr: 'pipe',
+        stdout: 'pipe',
+        async onExit(proc, exitCode) {
+          if (exitCode === 0) resolve();
+          else {
+            const makeErr = await Bun.readableStreamToText(proc.stderr);
+            reject(parseCompilerOutput(makeErr));
+          }
+        }
+      });
+    }
   });
 }
 

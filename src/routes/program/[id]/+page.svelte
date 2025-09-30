@@ -50,7 +50,7 @@
 <main class="h-screen bg-editor-background">
 	<div class="flex h-screen flex-row">
 		<Explorer></Explorer>
-		<Editor bind:code bind:path bind:editor></Editor>
+		<Editor {id} bind:code bind:path bind:editor bind:buildOutput></Editor>
 	</div>
 </main>
 

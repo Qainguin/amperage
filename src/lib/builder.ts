@@ -45,8 +45,15 @@ export async function createBundle(path: string): Promise<Uint8Array> {
 
 export interface BuildOutput {
   status: string;
-  bin?: ArrayBuffer;
+  bin?: ArrayBuffer | {cold: ArrayBuffer; hot: ArrayBuffer};
   errors?: any[];
+}
+
+export interface Issue {
+  filepath: string;
+  lineNumber: number;
+  type: 'error' | 'warning';
+  message: string;
 }
 
 export async function buildProgram(id: string): Promise<BuildOutput | undefined> {

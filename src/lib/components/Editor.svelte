@@ -8,17 +8,22 @@
 	import { defaultCommands } from 'prism-code-editor/commands';
 	import { cursorPosition } from 'prism-code-editor/cursor';
 	import { fs } from '$lib/loader.svelte';
+	import type { BuildOutput, Issue } from '$lib/builder';
 
 	interface Props {
 		code: string;
 		path: string;
 		editor: PrismEditor | undefined;
+		buildOutput: BuildOutput | undefined;
+		id: string;
 	}
 
 	let {
 		code = $bindable(''),
 		editor = $bindable(undefined),
-		path = $bindable('')
+		path = $bindable(''),
+		buildOutput = $bindable(undefined),
+		id = ''
 	}: Props = $props();
 
 	let currentErrorLines = $state<HTMLDivElement[]>([]);
@@ -42,6 +47,33 @@
 
 		editor.addExtensions(defaultCommands(), cursorPosition());
 	});
+
+	function cleanErrors() {
+		currentErrorLines.forEach((errLine) => {
+			errLine.classList.remove('error-line');
+		});
+		currentErrorLines.length = 0;
+	}
+
+	$effect(() => {
+		if (!buildOutput) return;
+		untrack(() => {
+			cleanErrors();
+
+			if (buildOutput.errors) {
+				const errors = buildOutput.errors;
+
+				for (let e = 0; e < errors.length; e++) {
+					const err: Issue = errors[e];
+
+					if (err.filepath.replace(`/${id}`, '') !== path)
+
+					editor!.lines[err.lineNumber].classList.add('error-line');
+					currentErrorLines.push(editor!.lines[err.lineNumber]);
+				}
+			}
+		});
+	})
 </script>
 
 <div id="editor" class="grid h-[calc(100vh-32px)] w-full overflow-y-auto"></div>
