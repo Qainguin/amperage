@@ -80,24 +80,23 @@ async function processZipFile(data: Uint8Array, ws: WebSocket): Promise<void> {
         compilationTimeMs, // Mock time
       };
     } catch(err: any) {
-    }
+      try {
+        await stat(`builds/${buildId}/bin/cold.package.bin`);
+        await stat(`builds/${buildId}/bin/hot.package.bin`);
+        
+        result = {
+          status: 'success',
+          bin: {
+            hot: Array.from(await readFile(`builds/${buildId}/bin/hot.package.bin`)), 
+            cold: Array.from(await readFile(`builds/${buildId}/bin/cold.package.bin`))
+          },
+          compilationTimeMs, // Mock time
+        };
 
-    try {
-      await stat(`builds/${buildId}/bin/cold.package.bin`);
-      await stat(`builds/${buildId}/bin/hot.package.bin`);
-      
-      result = {
-        status: 'success',
-        bin: {
-          hot: Array.from(await readFile(`builds/${buildId}/bin/hot.package.bin`)), 
-          cold: Array.from(await readFile(`builds/${buildId}/bin/cold.package.bin`))
-        },
-        compilationTimeMs, // Mock time
-      };
-
-      pros = true;
-    } catch(err: any) {
-      console.error(err);
+        pros = true;
+      } catch(err: any) {
+        console.error(err);
+      }
     }
 
     ws.send(JSON.stringify(result));
