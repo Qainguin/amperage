@@ -46,3 +46,7 @@ export async function sortEntries(path: string, id: string): Promise<string[]> {
     })
     .map((e) => e.name);
 }
+
+export type ProgramNameRecord = {
+  [key: string]: string;
+};

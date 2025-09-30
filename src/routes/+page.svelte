@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { PUBLIC_EZ, PUBLIC_JAR } from '$env/static/public';
+	import type { ProgramNameRecord } from '$lib';
 	import { createProgramFromHandles, createProgramFromTemplate } from '$lib/creator.svelte';
 	import { openDirectory } from '$lib/handler';
 	import { fs } from '$lib/loader.svelte';
 	import { onMount } from 'svelte';
-
-	type ProgramNameRecord = {
-    [key: string]: string;
-	};
 
 	let { data }: { data: { programs: string[] } } = $props();
 

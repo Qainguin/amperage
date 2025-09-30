@@ -3,8 +3,10 @@
 	import BottomBar from '$lib/components/BottomBar.svelte';
 	import Editor from '$lib/components/Editor.svelte';
 	import Explorer from '$lib/components/Explorer.svelte';
+	import TopBar from '$lib/components/TopBar.svelte';
 	import { fs, loadState } from '$lib/loader.svelte';
 	import type { PromisifiedFS } from '@isomorphic-git/lightning-fs';
+	import { Pane, PaneGroup, PaneResizer } from 'paneforge';
 	import type { PrismEditor } from 'prism-code-editor';
 	import { setContext } from 'svelte';
 
@@ -47,10 +49,19 @@
 	$inspect(buildOutput);
 </script>
 
+<TopBar {id}></TopBar>
+
 <main class="h-screen bg-editor-background">
-	<div class="flex h-screen flex-row">
-		<Explorer></Explorer>
-		<Editor {id} bind:code bind:path bind:editor bind:buildOutput></Editor>
+	<div class="flex h-[calc(100vh-64px)] flex-row absolute top-8">
+		<PaneGroup direction="horizontal">
+			<Pane defaultSize={25}>
+				<Explorer></Explorer>
+			</Pane>
+			<PaneResizer class="bg-editor-whitespace-foreground w-1 h-full"></PaneResizer>
+			<Pane defaultSize={75}>
+				<Editor {id} bind:code bind:path bind:editor bind:buildOutput></Editor>
+			</Pane>
+		</PaneGroup>
 	</div>
 </main>
 

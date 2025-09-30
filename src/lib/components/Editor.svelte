@@ -76,4 +76,4 @@
 	})
 </script>
 
-<div id="editor" class="grid h-[calc(100vh-32px)] w-full overflow-y-auto"></div>
+<div id="editor" class="grid h-[calc(100vh-64px)] w-full overflow-y-auto"></div>

@@ -25,7 +25,7 @@
 </script>
 
 <div
-	class="flex h-[calc(100vh-32px)] w-1/4 flex-col overflow-y-auto border-r border-editor-whitespace-foreground p-2 pt-[7px] pr-2 font-mono text-[14px] leading-[19.6px] text-editor-foreground"
+	class="flex h-[calc(100vh-64px)] w-full flex-col overflow-y-auto p-2 pt-[7px] pr-2 font-mono text-[14px] leading-[19.6px] text-editor-foreground"
 >
 	{#if $loadState !== 'loading' && $loadState !== 'not loading'}
 		{#await getEntries($loadState.id) then entries}
