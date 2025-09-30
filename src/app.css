@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@font-face {
+  font-family: "JetBrainsMono";
+  src: url("/jetbrains-mono.woff2") format('woff2');
+}
+
+@theme {
+  --font-mono: "JetBrainsMono";
+
+  /* Editor Base Colors (from JSON) */
+  --color-editor-foreground: #E6E1C4;
+  --color-editor-background: #372725;
+  --color-editor-selection-background: #16120E;
+  --color-editor-line-highlight-background: #1F1611;
+  --color-editor-cursor-foreground: #E6E1C4;
+  --color-editor-whitespace-foreground: #42302D;
+
+  /* Syntax Highlighting Colors (from JSON) */
+  --color-syntax-base-text: #E6E1C4;
+  --color-syntax-comment: #6b4e32;
+  --color-syntax-keyword: #ef5d32;
+  --color-syntax-function: #efac32;
+  --color-syntax-entity-name: #efac32;
+  --color-syntax-number: #6c99bb;
+  --color-syntax-variable: #7daf9c;
+  --color-syntax-constant: #6c99bb;
+  --color-syntax-variable-constant: #efac32;
+  --color-syntax-string: #d9d762;
+  --color-syntax-support-function: #efac32;
+  --color-syntax-support-type: #efac32;
+  --color-syntax-support-constant: #6c99bb;
+  --color-syntax-tag: #efcb43;
+  --color-syntax-tag-attribute: #efcb43;
+  --color-syntax-invalid-text: #ffffff;
+  --color-syntax-invalid-bg: #990000;
+  --color-syntax-escape-char: #7daf9c;
+  --color-syntax-markup-inserted-text: #e6e1dc;
+  --color-syntax-markup-inserted-bg: #144212;
+  --color-syntax-markup-deleted-text: #e6e1dc;
+  --color-syntax-markup-deleted-bg: #660000;
+  --color-syntax-diff-header-bg: #2f33ab;
+
+  /* Prism Code Editor UI Colors (from CSS block) */
+  --color-ui-caret: #aeafad;
+  --color-ui-widget-border: #444;
+  --color-ui-widget-bg: #1e1e1e;
+  --color-ui-widget-color: #ccc;
+  --color-ui-widget-color-active: #fff;
+  --color-ui-widget-color-options: #aaa;
+  --color-ui-widget-bg-input: #262626;
+  --color-ui-widget-bg-hover: #2e2e2e;
+  --color-ui-widget-bg-active: #336699;
+  --color-ui-widget-focus-ring: #5299e0;
+  --color-ui-search-bg-find-prism: #675451;
+  /* specific match color from .pce-match */
+  --color-ui-search-bg-find-default: #eb5e0054;
+  /* default search color from .prism-code-editor */
+  --color-ui-widget-bg-error: #4d1919;
+  --color-ui-widget-error-ring: #cc0000;
+  --color-ui-editor-border-highlight: #282828;
+  --color-ui-selection-match-bg: #add6ff26;
+  --color-ui-line-number: #888;
+  --color-ui-line-number-active: #ccc;
+  --color-ui-bg-fold: #c5c5c5;
+  --color-ui-bg-guide-indent: #9994;
+  --color-ui-bg-guide-indent-active: #eee6;
+  --color-ui-selection: #264f78;
+  --color-ui-active-tag-bg: #575757b8;
+  /* active-tagname/word-matches background */
+
+  /* Syntax Punctuation and Structure (from CSS block) */
+  --color-syntax-comment-punctuation: #6a9955;
+  --color-syntax-punctuation: #d4d4d4;
+  --color-syntax-number-css: #b5cea8;
+  --color-syntax-string-css: #ce9178;
+  --color-syntax-keyword-css: #569cd6;
+  --color-syntax-atrule-rule: #c586c0;
+  --color-syntax-function-css: #dcdcaa;
+  --color-syntax-class-name: #4ec9b0;
+  --color-syntax-atrule-property: #9cdcfe;
+  --color-syntax-selector: #d7ba7d;
+  --color-syntax-tag-punctuation: gray;
+  --color-syntax-namespace: #4ec9b0;
+  --color-syntax-constant-css: #4fc1ff;
+  --color-syntax-error-bracket: #ff1212cc;
+
+  /* Bracket Pair Colors (from CSS block) */
+  --color-bracket-level-0: gold;
+  --color-bracket-level-1: orchid;
+  --color-bracket-level-2: #179fff;
+  --color-bracket-level-3: gold;
+  --color-bracket-level-4: orchid;
+  --color-bracket-level-5: #179fff;
+  --color-bracket-level-6: gold;
+  --color-bracket-level-7: orchid;
+  --color-bracket-level-8: #179fff;
+  --color-bracket-level-9: gold;
+  --color-bracket-level-10: orchid;
+  --color-bracket-level-11: #179fff;
+}
