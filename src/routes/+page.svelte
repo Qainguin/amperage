@@ -4,36 +4,40 @@
 	import { createProgramFromHandles, createProgramFromTemplate } from '$lib/creator.svelte';
 	import { openDirectory } from '$lib/handler';
 	import { fs } from '$lib/loader.svelte';
-	import { nanoid } from '$lib';
-	import type { PromisifiedFS } from '@isomorphic-git/lightning-fs';
+	import { onMount } from 'svelte';
+
+	type ProgramNameRecord = {
+    [key: string]: string;
+	};
 
 	let { data }: { data: { programs: string[] } } = $props();
 
 	let programs: string[] = $state(data.programs);
+	let programNames: ProgramNameRecord = $state({});
 
-	$inspect(programs);
-
-	/**
-	 * Recursively creates a directory path in the virtual filesystem.
-	 * @param {string} dirPath - The full directory path (e.g., '/root/include')
-	 * @param {object} fs - The lightning-fs instance
-	 */
-	async function mkdirRecursive(dirPath: string, fs: PromisifiedFS) {
-		const parts = dirPath.split('/').filter((p) => p.length > 0); // Split and remove empty strings
-		let currentPath = '';
-
-		for (const part of parts) {
-			currentPath += '/' + part;
-			try {
-				await fs.mkdir(currentPath);
-			} catch (err: any) {
-				// Ignore the error if the directory already exists
-				if (err.code !== 'EEXIST') {
-					throw err;
-				}
-			}
+	onMount(() => {
+		let updatedKeys: ProgramNameRecord = {};
+		for (const key in localStorage) {
+			if (!key.startsWith('projects:') || typeof key !== 'string') continue;
+			const id = key.replace('projects:', '');
+			const name = localStorage.getItem(key);
+			localStorage.removeItem(key);
+			if (!id || !name) continue;
+			updatedKeys[id] = name;
 		}
-	}
+		if (Object.keys(updatedKeys).length > 0) {
+			localStorage.setItem('programNames', JSON.stringify(updatedKeys));
+		}
+
+		try {
+			programNames = JSON.parse(localStorage.getItem('programNames') ?? '{}');
+		} catch(err: any) {
+			programNames = {};
+			localStorage.setItem('programNames', JSON.stringify({}));
+		}
+	})
+
+	$inspect(programNames);
 </script>
 
 <main
@@ -69,9 +73,11 @@
 				oncontextmenu={async (e) => {
 					e.preventDefault();
 					fs.unlink(`/${program}`);
+					delete programNames[program];
+					localStorage.setItem('programNames', JSON.stringify(programNames));
 					programs = await fs.readdir('/');
 				}}
-				onclick={() => goto(`/program/${program}`)}>{program}</button
+				onclick={() => goto(`/program/${program}`)}>{programNames[program] ?? 'Unknown'}</button
 			>
 		{/each}
 	{/if}

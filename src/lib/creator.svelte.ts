@@ -31,6 +31,7 @@ export async function createProgramFromHandles(handles: { files: File[]; rootNam
 
   // 2. Use Promise.all() to wait for all file creation Promises to resolve
   await Promise.all(fileCreationPromises);
+  await setProgramName(id, "Untitled Program");
 
   loadState.set({ id, fs });
 }
@@ -71,6 +72,7 @@ export async function createProgramFromTemplate(url: string, fs: PromisifiedFS):
   console.log("[CREATOR] Writing to FS...");
 
   await templateWalk(fs, data, `/${id}`);
+  await setProgramName(id, "Untitled Program");
 
   console.log("[CREATOR] Finished creating template in", performance.now() - start, "ms.");
 
@@ -134,5 +136,17 @@ async function mkdirRecursive(dirPath: string, fs: PromisifiedFS): Promise<void>
         console.error(err.message);
       }
     }
+  }
+}
+
+async function setProgramName(id: string, newName: string) {
+  try {
+    const localNames = localStorage.getItem('programNames') ?? '{}';
+    const programNames = JSON.parse(localNames);
+    programNames[id] = newName;
+    console.log("names:", programNames);
+    localStorage.setItem('programNames', JSON.stringify(programNames));
+  } catch(err: any) {
+    console.error(err);
   }
 }
