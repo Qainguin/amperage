@@ -64,7 +64,7 @@ async function processZipFile(data: Uint8Array, ws: WebSocket): Promise<void> {
 		buildId = zip.getEntries()[0].entryName.split('/')[1];
 
 		let start = performance.now();
-		console.log(await runBuild(buildId));
+		await runBuild(buildId);
 		const compilationTimeMs = performance.now() - start;
 
 		// 3. Send results back
@@ -83,8 +83,6 @@ async function processZipFile(data: Uint8Array, ws: WebSocket): Promise<void> {
 			try {
 				await stat(`builds/${buildId}/bin/cold.package.bin`);
 				await stat(`builds/${buildId}/bin/hot.package.bin`);
-
-				console.log(await readdir(`builds/${buildId}/bin/`));
 
 				result = {
 					status: 'success',
@@ -111,7 +109,7 @@ async function processZipFile(data: Uint8Array, ws: WebSocket): Promise<void> {
 	}
 
 	if (buildId !== '') {
-		await rm(`builds/${buildId}`, { recursive: true, force: true });
+		//await rm(`builds/${buildId}`, { recursive: true, force: true });
 	}
 }
 
@@ -143,13 +141,13 @@ async function runBuild(buildId: string): Promise<void | Issue[]> {
 			}
 
 			if (ez) {
-				console.log('Project is EZ');
+				console.log('[Server] Program is EZ');
 				await cp(`templates/ez/firmware`, `builds/${buildId}/firmware`, { recursive: true });
 				await cp(`templates/ez/include`, `builds/${buildId}/include`, { recursive: true });
 			}
 
 			const prosProcess = Bun.spawn({
-				cmd: ['pros', 'make'],
+				cmd: ['pros', 'make', '--', '-j', '4'],
 				cwd: `builds/${buildId}`,
 				env: {
 					...process.env
@@ -160,7 +158,6 @@ async function runBuild(buildId: string): Promise<void | Issue[]> {
 					if (exitCode === 0) resolve();
 					else {
 						const makeErr = await Bun.readableStreamToText(proc.stderr);
-						console.log(makeErr);
 						reject(parseCompilerOutput(makeErr));
 					}
 				}
@@ -247,7 +244,6 @@ wss.on('connection', function connection(ws) {
 		}
 
 		if (msg.type === 'bundle') {
-			console.log(msg.data);
 			processZipFile(new Uint8Array(msg.data), ws);
 		}
 	});

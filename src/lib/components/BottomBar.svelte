@@ -11,6 +11,9 @@
 	let device = $state<V5SerialDevice | null>(null);
 
 	let building = $state<boolean>(false);
+	let uploading = $state<boolean>(false);
+	// 1. New state to track upload progress (0.0 to 1.0)
+	let uploadProgress = $state<number>(0);
 
 	let buildColor = $derived.by(() => {
 		if (buildOutput === undefined) return 'var(--color-editor-foreground)';
@@ -24,6 +27,10 @@
 <div
 	class="absolute bottom-0 left-0 z-10 flex h-8 w-screen flex-row items-center gap-2 border-t border-editor-whitespace-foreground bg-editor-background px-2"
 >
+	{#if uploading}
+		<div class="upload-progress-bar" style:width={`${uploadProgress * 100}%`}></div>
+	{/if}
+
 	<button
 		class="cursor-pointer"
 		onclick={async () => {
@@ -114,8 +121,19 @@
 			class="cursor-pointer"
 			aria-label="Upload"
 			onclick={async () => {
-				if (!device) return;
-				await uploadProgram(device, id, 2);
+				if (!device || uploading) return;
+				uploading = true;
+				uploadProgress = 0; // Reset progress
+
+				const uploadOutput = await uploadProgram(device, id, 2, (state, current, total) => {
+					// 3. Update the progress state
+					uploadProgress = current / total;
+					console.log(uploadProgress);
+				});
+
+				uploading = false;
+				// Optional: Reset or hold the progress bar for a moment
+				setTimeout(() => (uploadProgress = 0), 500);
 			}}
 		>
 			<svg
@@ -128,7 +146,7 @@
 				stroke-width="2"
 				stroke-linecap="round"
 				stroke-linejoin="round"
-				class="lucide lucide-hard-drive-download-icon lucide-hard-drive-download"
+				class={uploading ? 'wiggle' : ''}
 				><path d="M12 2v8" /><path d="m16 6-4 4-4-4" /><rect
 					width="20"
 					height="8"
@@ -148,6 +166,18 @@
 		--wiggle-angle: 10deg; /* rotate amount */
 		--wiggle-offset: 0px; /* horizontal offset */
 		--wiggle-ease: cubic-bezier(0.28, 0.84, 0.39, 1); /* playful easing */
+		--color-blue-500: #3b82f6; /* Example blue color */
+	}
+
+	/* 4. Progress Bar Styling */
+	.upload-progress-bar {
+		position: absolute;
+		top: -1px; /* Position it to slightly cover or sit right on the top border */
+		left: 0;
+		height: 1px; /* Make it a thin line like a border */
+		background-color: var(--color-blue-500); /* Blue fill color */
+		transition: width 100ms linear; /* Smooth visual update */
+		z-index: 20; /* Ensure it's above the main div's background/content but below other elements if needed */
 	}
 
 	/* Core wiggle keyframes */

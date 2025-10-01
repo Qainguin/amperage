@@ -2236,7 +2236,6 @@ class V5SerialConnection extends VexSerialConnection {
 			);
 			if (!(p1 instanceof InitFileTransferReplyD2HPacket))
 				throw new Error('InitFileTransferH2DPacket failed');
-			console.log(p1);
 			if (linkedFile !== undefined) {
 				const p3 = yield this.writeDataAsync(
 					new LinkFileH2DPacket(
@@ -2269,7 +2268,6 @@ class V5SerialConnection extends VexSerialConnection {
 				const p2 = yield this.writeDataAsync(new WriteFileH2DPacket(nextAddress, tmpbuf), 3000);
 				if (!(p2 instanceof WriteFileReplyD2HPacket))
 					throw new Error('WriteFileReplyD2HPacket failed');
-				console.log(p2);
 				if (progressCallback != null) progressCallback(bufferOffset, buf.byteLength);
 				// next chunk
 				bufferOffset += bufferChunkSize;
