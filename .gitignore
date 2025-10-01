@@ -9,6 +9,7 @@ node_modules
 /build
 builds
 templates
+.sonda
 
 # OS
 .DS_Store
