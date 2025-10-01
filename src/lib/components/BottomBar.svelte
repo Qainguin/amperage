@@ -2,6 +2,7 @@
 	import { buildProgram, type BuildOutput } from '$lib/builder';
 	import { connectToBrain, uploadProgram } from '$lib/uploader';
 	import { V5SerialDevice } from '$lib/v5-protocol';
+	import SlotSelector from './SlotSelector.svelte';
 
 	let {
 		id,
@@ -9,10 +10,12 @@
 		buildOutput = $bindable(undefined)
 	}: { id: string; buildOutput: BuildOutput | undefined; programName: string } = $props();
 
-	let device = $state<V5SerialDevice | null>(null);
+	let device = $state<V5SerialDevice | null | 'connected'>('connected');
+	let slot = $state<number>(1);
 
 	let building = $state<boolean>(false);
 	let uploading = $state<boolean>(false);
+	let selectingSlot = $state<boolean>(false);
 	// 1. New state to track upload progress (0.0 to 1.0)
 	let uploadProgress = $state<number>(0);
 
@@ -22,7 +25,13 @@
 		else return 'var(--color-red-500)';
 	});
 
-	$inspect(device);
+	let slotSelectorBtn: HTMLButtonElement | null = $state(null);
+	let slotSelectorRect: DOMRect | null = $derived.by(() => {
+		if (!slotSelectorBtn) return null;
+		return slotSelectorBtn.getBoundingClientRect();
+	});
+
+	$inspect(slotSelectorRect);
 </script>
 
 <div
@@ -118,12 +127,12 @@
 		>
 	</button>
 
-	{#if device instanceof V5SerialDevice}
+	{#if device instanceof V5SerialDevice || device === 'connected'}
 		<button
 			class="cursor-pointer"
 			aria-label="Upload"
 			onclick={async () => {
-				if (!device || uploading) return;
+				if (!(device instanceof V5SerialDevice) || uploading) return;
 				uploading = true;
 				uploadProgress = 0; // Reset progress
 
@@ -132,7 +141,7 @@
 					device,
 					programName,
 					id,
-					2,
+					slot,
 					(state, current, total) => {
 						// 3. Update the progress state
 						uploadProgress = current / total;
@@ -164,8 +173,36 @@
 				/><path d="M6 18h.01" /><path d="M10 18h.01" /></svg
 			>
 		</button>
+
+		<button
+			class="cursor-pointer"
+			aria-label="Slot"
+			bind:this={slotSelectorBtn}
+			onclick={() => (selectingSlot = !selectingSlot)}
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="var(--color-editor-foreground)"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="lucide lucide-hash-icon lucide-hash"
+				><line x1="4" x2="20" y1="9" y2="9" /><line x1="4" x2="20" y1="15" y2="15" /><line
+					x1="10"
+					x2="8"
+					y1="3"
+					y2="21"
+				/><line x1="16" x2="14" y1="3" y2="21" /></svg
+			>
+		</button>
 	{/if}
 </div>
+
+<SlotSelector bind:slot bind:selectingSlot {slotSelectorRect}></SlotSelector>
 
 <style>
 	:root {
