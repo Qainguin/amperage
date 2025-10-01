@@ -51,7 +51,7 @@
 <TopBar {id} bind:programName></TopBar>
 
 <main class="h-screen bg-editor-background">
-	<div class="absolute top-8 flex h-[calc(100vh-64px)] flex-row">
+	<div class="absolute top-8 flex h-[calc(100vh-64px)] w-screen flex-row">
 		<PaneGroup direction="horizontal">
 			<Pane defaultSize={25}>
 				<Explorer></Explorer>
