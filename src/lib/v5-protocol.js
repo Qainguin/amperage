@@ -1891,6 +1891,7 @@ class VexSerialConnection extends VexEventTarget {
 				try {
 					port = yield this.serial.requestPort({ filters: this.filters });
 				} catch (e) {
+					console.warn(e);
 					console.warn('No valid port selected.');
 				}
 			}
@@ -2268,6 +2269,7 @@ class V5SerialConnection extends VexSerialConnection {
 				const p2 = yield this.writeDataAsync(new WriteFileH2DPacket(nextAddress, tmpbuf), 3000);
 				if (!(p2 instanceof WriteFileReplyD2HPacket))
 					throw new Error('WriteFileReplyD2HPacket failed');
+				console.log(p2);
 				if (progressCallback != null) progressCallback(bufferOffset, buf.byteLength);
 				// next chunk
 				bufferOffset += bufferChunkSize;
@@ -4342,7 +4344,7 @@ class V5SerialDevice extends VexSerialDevice {
 					if ((yield c.query1()) === null) {
 						// no response
 						yield c.close();
-						continue;
+						break;
 					}
 					this.connection = c;
 					break;

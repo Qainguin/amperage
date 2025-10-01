@@ -45,19 +45,17 @@
 
 	if (data!.fs) loadState.set(data!);
 	setContext('change-file', changeFile);
-
-	$inspect(buildOutput);
 </script>
 
 <TopBar {id}></TopBar>
 
 <main class="h-screen bg-editor-background">
-	<div class="flex h-[calc(100vh-64px)] flex-row absolute top-8">
+	<div class="absolute top-8 flex h-[calc(100vh-64px)] flex-row">
 		<PaneGroup direction="horizontal">
 			<Pane defaultSize={25}>
 				<Explorer></Explorer>
 			</Pane>
-			<PaneResizer class="bg-editor-whitespace-foreground w-1 h-full"></PaneResizer>
+			<PaneResizer class="h-full w-1 bg-editor-whitespace-foreground"></PaneResizer>
 			<Pane defaultSize={75}>
 				<Editor {id} bind:code bind:path bind:editor bind:buildOutput></Editor>
 			</Pane>

@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { buildProgram, type BuildOutput } from '$lib/builder';
-	import { V5SerialDevice, type V5Brain } from '$lib/v5-protocol';
+	import { connectToBrain, uploadProgram } from '$lib/uploader';
+	import { V5SerialDevice } from '$lib/v5-protocol';
 
 	let {
 		id,
 		buildOutput = $bindable(undefined)
 	}: { id: string; buildOutput: BuildOutput | undefined } = $props();
 
-	let device = $state<V5SerialDevice | 'connected' | null>('connected');
+	let device = $state<V5SerialDevice | null>(null);
 
 	let building = $state<boolean>(false);
 
@@ -17,23 +18,7 @@
 		else return 'var(--color-red-500)';
 	});
 
-	async function connectToBrain(dcCallback: () => any): Promise<V5SerialDevice | null> {
-		if (!('serial' in navigator)) return null;
-
-		let device = null;
-
-		try {
-			device = new V5SerialDevice(navigator.serial);
-			const ok = await device.connect();
-			if (!ok) return null;
-			const conn = (device as any).connection;
-			if (conn && typeof conn.on === 'function') conn.on('disconnected', dcCallback);
-		} catch (err: any) {
-			console.error('Connect error:', err);
-		}
-
-		return device;
-	}
+	$inspect(device);
 </script>
 
 <div
@@ -104,7 +89,7 @@
 
 			building = false;
 		}}
-		class={'cursor-pointer'}
+		class="cursor-pointer"
 		aria-label="Build Program"
 	>
 		<svg
@@ -123,6 +108,37 @@
 			/><rect x="14" y="2" width="8" height="8" rx="1" /></svg
 		>
 	</button>
+
+	{#if device instanceof V5SerialDevice}
+		<button
+			class="cursor-pointer"
+			aria-label="Upload"
+			onclick={async () => {
+				if (!device) return;
+				await uploadProgram(device, id, 2);
+			}}
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="var(--color-editor-foreground)"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="lucide lucide-hard-drive-download-icon lucide-hard-drive-download"
+				><path d="M12 2v8" /><path d="m16 6-4 4-4-4" /><rect
+					width="20"
+					height="8"
+					x="2"
+					y="14"
+					rx="2"
+				/><path d="M6 18h.01" /><path d="M10 18h.01" /></svg
+			>
+		</button>
+	{/if}
 </div>
 
 <style>

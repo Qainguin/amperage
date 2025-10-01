@@ -2,8 +2,12 @@
 	import { fs, loadState } from '$lib/loader.svelte';
 	import Entry from './Entry.svelte';
 
+	const EXCLUDED_DIRS = ['.git', 'firmware', '.vscode', '.d', 'bin', 'build'];
+
 	async function getEntries(id: string) {
-		const entries = await fs.readdir(`/${id}`);
+		let entries = await fs.readdir(`/${id}`);
+
+		entries = entries.filter((e) => !EXCLUDED_DIRS.includes(e));
 
 		// stat each entry to check if directory
 		const detailed = await Promise.all(
