@@ -13,6 +13,7 @@
 	let { data }: { data: { id: string; fs: PromisifiedFS } | undefined } = $props();
 
 	let id: string = $state('');
+	let programName: string = $state('');
 	let path: string = $state('');
 
 	let code: string = $state('');
@@ -47,7 +48,7 @@
 	setContext('change-file', changeFile);
 </script>
 
-<TopBar {id}></TopBar>
+<TopBar {id} bind:programName></TopBar>
 
 <main class="h-screen bg-editor-background">
 	<div class="absolute top-8 flex h-[calc(100vh-64px)] flex-row">
@@ -63,4 +64,4 @@
 	</div>
 </main>
 
-<BottomBar {id} bind:buildOutput></BottomBar>
+<BottomBar {id} {programName} bind:buildOutput></BottomBar>

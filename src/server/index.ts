@@ -29,6 +29,13 @@ function ensureOutputDir() {
 	}
 }
 
+function binToBase64(zip: Uint8Array): string {
+	const binaryString = Array.from(zip)
+		.map((byte) => String.fromCharCode(byte))
+		.join('');
+	return btoa(binaryString);
+}
+
 /**
  * Placeholder function for processing the received ZIP file data.
  * In a real application, you would unzip the data, run your 'make' compilation,
@@ -76,7 +83,7 @@ async function processZipFile(data: Uint8Array, ws: WebSocket): Promise<void> {
 			await stat(`builds/${buildId}/build/${buildId}?.bin`);
 			result = {
 				status: 'success',
-				bin: Array.from(await readFile(`builds/${buildId}/build/${buildId}?.bin`)),
+				bin: binToBase64(await readFile(`builds/${buildId}/build/${buildId}?.bin`)),
 				compilationTimeMs // Mock time
 			};
 		} catch (err: any) {
@@ -87,8 +94,8 @@ async function processZipFile(data: Uint8Array, ws: WebSocket): Promise<void> {
 				result = {
 					status: 'success',
 					bin: {
-						hot: Array.from(await readFile(`builds/${buildId}/bin/hot.package.bin`)),
-						cold: Array.from(await readFile(`builds/${buildId}/bin/cold.package.bin`))
+						hot: binToBase64(await readFile(`builds/${buildId}/bin/hot.package.bin`)),
+						cold: binToBase64(await readFile(`builds/${buildId}/bin/cold.package.bin`))
 					},
 					compilationTimeMs // Mock time
 				};
@@ -147,7 +154,7 @@ async function runBuild(buildId: string): Promise<void | Issue[]> {
 			}
 
 			const prosProcess = Bun.spawn({
-				cmd: ['pros', 'make', '--', '-j', '4'],
+				cmd: ['pros', 'build-compile-commands', '--no-analytics'],
 				cwd: `builds/${buildId}`,
 				env: {
 					...process.env
@@ -221,6 +228,27 @@ function parseCompilerOutput(rawOutput: string): Issue[] {
 	return issues;
 }
 
+function processBundle(messageData: string) {
+	// 1. Get the Base64 string
+	const bundleBase64 = messageData; // e.g., 'UEsDBBQACAgI...'
+
+	// 2. Use Buffer to convert the Base64 string to a Buffer object
+	// The 'base64' argument tells Buffer how to interpret the input string.
+	const zipBuffer = Buffer.from(bundleBase64, 'base64');
+
+	// 3. Convert the Node.js Buffer to a standard Uint8Array
+	// Note: A Node.js Buffer is already a subclass of Uint8Array,
+	// but explicitly creating a Uint8Array from it ensures compatibility
+	// with APIs that expect a strict Uint8Array.
+	const zipUint8Array = new Uint8Array(zipBuffer);
+
+	// You can now process the zip file data as a Uint8Array
+	console.log('Successfully decoded Base64 to Uint8Array.');
+	console.log('Decoded data size (bytes):', zipUint8Array.length);
+
+	return zipUint8Array;
+}
+
 // --- Server Setup ---
 
 // Ensure the necessary directory structure is in place
@@ -244,7 +272,7 @@ wss.on('connection', function connection(ws) {
 		}
 
 		if (msg.type === 'bundle') {
-			processZipFile(new Uint8Array(msg.data), ws);
+			processZipFile(processBundle(msg.data), ws);
 		}
 	});
 

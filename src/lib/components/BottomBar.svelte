@@ -5,8 +5,9 @@
 
 	let {
 		id,
+		programName = '',
 		buildOutput = $bindable(undefined)
-	}: { id: string; buildOutput: BuildOutput | undefined } = $props();
+	}: { id: string; buildOutput: BuildOutput | undefined; programName: string } = $props();
 
 	let device = $state<V5SerialDevice | null>(null);
 
@@ -93,6 +94,7 @@
 
 			buildOutput = undefined;
 			buildOutput = await buildProgram(id);
+			console.log($state.snapshot(buildOutput));
 
 			building = false;
 		}}
@@ -125,11 +127,17 @@
 				uploading = true;
 				uploadProgress = 0; // Reset progress
 
-				const uploadOutput = await uploadProgram(device, id, 2, (state, current, total) => {
-					// 3. Update the progress state
-					uploadProgress = current / total;
-					console.log(uploadProgress);
-				});
+				const uploadOutput = await uploadProgram(
+					buildOutput,
+					device,
+					programName,
+					id,
+					2,
+					(state, current, total) => {
+						// 3. Update the progress state
+						uploadProgress = current / total;
+					}
+				);
 
 				uploading = false;
 				// Optional: Reset or hold the progress bar for a moment

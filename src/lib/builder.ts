@@ -44,17 +44,24 @@ export async function getFilesRecursively(
 	return files;
 }
 
+function zipToBase64(zip: Uint8Array): string {
+	const binaryString = Array.from(zip)
+		.map((byte) => String.fromCharCode(byte))
+		.join('');
+	return btoa(binaryString);
+}
+
 // Example usage (assuming the original entry point was createBundle)
-export async function createBundle(path: string): Promise<Uint8Array> {
+export async function createBundle(path: string): Promise<string> {
 	const allFiles = await getFilesRecursively(path);
 	console.log(allFiles);
 	const zip = await createZip(allFiles);
-	return zip;
+	return zipToBase64(zip);
 }
 
 export interface BuildOutput {
 	status: string;
-	bin?: ArrayBuffer | { cold: ArrayBuffer; hot: ArrayBuffer };
+	bin?: string | { cold: string; hot: string };
 	errors?: any[];
 }
 
@@ -84,7 +91,7 @@ export async function buildProgram(id: string): Promise<BuildOutput | undefined>
 
 		ws.addEventListener('open', async (event) => {
 			const bundle = await createBundle(`/${id}`);
-			const bundleMsg = JSON.stringify({ type: 'bundle', data: Array.from(bundle) });
+			const bundleMsg = JSON.stringify({ type: 'bundle', data: bundle });
 			ws.send(bundleMsg);
 		});
 
