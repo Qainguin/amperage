@@ -57,7 +57,7 @@ export async function uploadProgram(
 	ini.project.ide = 'AMP';
 	ini.program.name = name;
 	ini.program.slot = slot - 1;
-	ini.program.icon = 'USER902x.bmp';
+	ini.program.icon = typeof output.bin === 'string' ? 'USER926x.bmp' : 'USER902x.bmp';
 	ini.program.description = 'This project was uploaded through amperage.dev';
 
 	try {
