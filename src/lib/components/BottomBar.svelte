@@ -10,7 +10,7 @@
 		buildOutput = $bindable(undefined)
 	}: { id: string; buildOutput: BuildOutput | undefined; programName: string } = $props();
 
-	let device = $state<V5SerialDevice | null | 'connected'>('connected');
+	let device = $state<V5SerialDevice | null>(null);
 	let slot = $state<number>(1);
 
 	let building = $state<boolean>(false);
@@ -127,7 +127,7 @@
 		>
 	</button>
 
-	{#if device instanceof V5SerialDevice || device === 'connected'}
+	{#if device instanceof V5SerialDevice}
 		<button
 			class="cursor-pointer"
 			aria-label="Upload"
