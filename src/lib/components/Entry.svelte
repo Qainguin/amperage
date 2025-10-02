@@ -3,7 +3,7 @@
 	import { fs } from '$lib/loader.svelte';
 	import { getContext } from 'svelte';
 
-	let { entry, id }: { entry: string; id: string } = $props();
+	let { entry, id, path }: { entry: string; id: string; path: string } = $props();
 
 	let stat = await fs.stat(`/${id}/${entry}`);
 
@@ -34,7 +34,9 @@
 
 <div class="flex flex-col">
 	<button
-		class="flex cursor-pointer flex-row text-start hover:bg-editor-line-highlight-background"
+		class="flex cursor-pointer flex-row text-start {`/${id}/${entry}` === path
+			? 'bg-editor-selection-background/50'
+			: 'hover:bg-editor-line-highlight-background/25'}"
 		onclick={() => {
 			if (stat.isDirectory()) {
 				expanded = !expanded;
@@ -65,7 +67,7 @@
 		{#await getEntries(`/${id}/${entry}`) then entries}
 			{#each entries as e}
 				<div class="ml-4">
-					<Entry entry={entry + '/' + e} {id}></Entry>
+					<Entry entry={entry + '/' + e} {id} {path}></Entry>
 				</div>
 			{/each}
 		{/await}

@@ -2,6 +2,8 @@
 	import { fs, loadState } from '$lib/loader.svelte';
 	import Entry from './Entry.svelte';
 
+	let { path = $bindable('') } = $props();
+
 	const EXCLUDED_DIRS = ['.git', 'firmware', '.vscode', '.d', 'bin', 'build'];
 
 	async function getEntries(id: string) {
@@ -35,7 +37,7 @@
 		{#await getEntries($loadState.id) then entries}
 			{#each entries as e}
 				{#if e.name !== '.git'}
-					<Entry entry={e.name} id={$loadState.id}></Entry>
+					<Entry entry={e.name} id={$loadState.id} {path}></Entry>
 				{/if}
 			{/each}
 		{/await}

@@ -54,7 +54,7 @@
 	<div class="absolute top-8 flex h-[calc(100vh-64px)] w-screen flex-row">
 		<PaneGroup direction="horizontal">
 			<Pane defaultSize={25}>
-				<Explorer></Explorer>
+				<Explorer bind:path></Explorer>
 			</Pane>
 			<PaneResizer class="h-full w-1 bg-editor-whitespace-foreground"></PaneResizer>
 			<Pane defaultSize={75}>
